@@ -15,6 +15,13 @@
       "when": 1763459721623,
       "tag": "0001_soft_susan_delgado",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1763484000000,
+      "tag": "0002_add_letter_review_fields",
+      "breakpoints": true
     }
   ]
 }

@@ -19,6 +19,8 @@ import { toast } from "sonner";
 import { Plate, PlateContent, usePlateEditor } from "platejs/react";
 import { EditorKit } from "@/components/editor/editor-kit";
 import { type Value } from "platejs";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { orpc } from "@/utils/orpc";
 
 interface LetterFormProps {
 	letterType: "internal" | "external";
@@ -27,6 +29,7 @@ interface LetterFormProps {
 
 export default function LetterForm({ letterType, onBack }: LetterFormProps) {
 	const router = useRouter();
+	const queryClient = useQueryClient();
 	const editor = usePlateEditor({
 		plugins: EditorKit,
 		value: [
@@ -36,12 +39,6 @@ export default function LetterForm({ letterType, onBack }: LetterFormProps) {
 			},
 		],
 	});
-	const [editorValue, setEditorValue] = useState<Value>([
-		{
-			type: "p",
-			children: [{ text: "" }],
-		},
-	]);
 	const [formData, setFormData] = useState({
 		referenceNumber: "",
 		date: "",
@@ -52,10 +49,48 @@ export default function LetterForm({ letterType, onBack }: LetterFormProps) {
 		attachments: "",
 	});
 
+	// Create letter mutation
+	const createLetterMutation = useMutation(
+		orpc.letter.create.mutationOptions({
+			onSuccess: () => {
+				toast.success("ደብዳቤ ተቀምጧል");
+				// Invalidate queries to refresh the dashboard
+				queryClient.invalidateQueries({ queryKey: orpc.letter.getAll.queryKey() });
+				router.push("/dashboard");
+			},
+			onError: (error: any) => {
+				toast.error(error?.message || "ደብዳቤ ለመቀመጥ ስህተት ተፈጥሯል");
+			},
+		})
+	);
+
 	const handleSubmit = async () => {
-		// TODO: Save letter to database
-		toast.success("ደብዳቤ ተቀምጧል");
-		router.push("/dashboard");
+		try {
+			// Generate unique ID
+			const letterId = `letter_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+			
+			// Get editor content
+			const editorContent = editor.children;
+			
+			// Prepare letter data
+			const letterData = {
+				id: letterId,
+				type: letterType,
+				direction: "outgoing" as const,
+				referenceNumber: formData.referenceNumber || undefined,
+				date: formData.date ? new Date(formData.date) : undefined,
+				to: formData.to || undefined,
+				from: formData.from,
+				subject: formData.subject || undefined,
+				content: editorContent || undefined,
+				attachments: formData.attachments ? { count: parseInt(formData.attachments) } : undefined,
+			};
+
+			// Create letter
+			createLetterMutation.mutate(letterData);
+		} catch (error: any) {
+			toast.error(error?.message || "ደብዳቤ ለመቀመጥ ስህተት ተፈጥሯል");
+		}
 	};
 
 	const isInternal = letterType === "internal";
@@ -75,7 +110,13 @@ export default function LetterForm({ letterType, onBack }: LetterFormProps) {
 			<Box sx={{ mb: 3 }}>
 				<Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", mb: 2 }}>
 					<Box>
-						<Typography variant="h6" sx={{ mb: 0.5 }}>
+						<Typography 
+							variant="h6" 
+							sx={{ 
+								mb: 0.5,
+								fontFamily: '"Roboto", "Arial", "Helvetica", sans-serif',
+							}}
+						>
 							Health System Innovation and Quality LEO
 						</Typography>
 						<Typography variant="body2">
@@ -270,9 +311,35 @@ export default function LetterForm({ letterType, onBack }: LetterFormProps) {
 
 			{/* Action Buttons */}
 			<Box sx={{ display: "flex", justifyContent: "space-between", mt: 4 }}>
-				<Button onClick={onBack}>ተመለስ</Button>
-				<Button variant="contained" onClick={handleSubmit}>
-					አስቀምጥ
+				<Button 
+					onClick={onBack}
+					size="large"
+					sx={{ 
+						minWidth: 160,
+						minHeight: 56,
+						fontSize: "1.125rem",
+						fontWeight: 600,
+						px: 4,
+						py: 1.5,
+					}}
+				>
+					ተመለስ
+				</Button>
+				<Button 
+					variant="contained" 
+					onClick={handleSubmit}
+					disabled={createLetterMutation.isPending}
+					size="large"
+					sx={{ 
+						minWidth: 160,
+						minHeight: 56,
+						fontSize: "1.125rem",
+						fontWeight: 600,
+						px: 4,
+						py: 1.5,
+					}}
+				>
+					{createLetterMutation.isPending ? "በመቀመጥ ላይ..." : "አስቀምጥ"}
 				</Button>
 			</Box>
 		</Paper>

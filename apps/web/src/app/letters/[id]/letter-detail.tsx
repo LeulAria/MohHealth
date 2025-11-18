@@ -245,19 +245,40 @@ export default function LetterDetail({
 								size="small"
 								color={getStatusColor(mockLetter.status) as any}
 							/>
-							<IconButton size="small">
-								<FlagIcon />
-							</IconButton>
 						</Box>
 						<Typography variant="h4" sx={{ fontWeight: 600 }}>
 							{mockLetter.subject}
 						</Typography>
 					</Box>
-					{permissions.canEditDraft && (
-						<Button startIcon={<EditIcon />} variant="outlined">
-							አስተካክል
-						</Button>
-					)}
+					{/* Action Buttons */}
+					<Box sx={{ display: "flex", gap: 2 }}>
+						{permissions.canApprove && mockLetter.status === "pending_approval" && (
+							<>
+								<Button
+									variant="contained"
+									color="success"
+									startIcon={<CheckCircleIcon />}
+								>
+									ጸድቅ
+								</Button>
+								<Button
+									variant="outlined"
+									color="error"
+								>
+									አትቀበል
+								</Button>
+							</>
+						)}
+						{permissions.canStamp && mockLetter.status === "approved" && (
+							<Button
+								variant="contained"
+								color="primary"
+								startIcon={<LockIcon />}
+							>
+								ዲጂታል ማህተም አክል
+							</Button>
+						)}
+					</Box>
 				</Box>
 
 				<Paper sx={{ p: 3, mb: 3 }}>
@@ -435,27 +456,7 @@ export default function LetterDetail({
 						</Box>
 					)}
 
-					{/* Action Buttons */}
-					<Box sx={{ display: "flex", gap: 2, mt: 4 }}>
-						{permissions.canApprove && mockLetter.status === "pending_approval" && (
-							<Button
-								variant="contained"
-								color="success"
-								startIcon={<CheckCircleIcon />}
-							>
-								ጸድቅ
-							</Button>
-						)}
-						{permissions.canStamp && mockLetter.status === "approved" && (
-							<Button
-								variant="contained"
-								color="primary"
-								startIcon={<LockIcon />}
-							>
-								ዲጂታል ማህተም አክል
-							</Button>
-						)}
-					</Box>
+
 				</Paper>
 			</Box>
 

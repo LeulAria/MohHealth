@@ -5,7 +5,7 @@ export const letter = pgTable("letter", {
 	id: text("id").primaryKey(),
 	type: text("type").notNull(), // 'internal' | 'external'
 	direction: text("direction").notNull(), // 'incoming' | 'outgoing'
-	status: text("status").notNull().default("draft"), // 'draft' | 'pending_approval' | 'approved' | 'stamped' | 'locked' | 'archived'
+	status: text("status").notNull().default("draft"), // 'draft' | 'pending_approval' | 'approved' | 'rejected' | 'stamped' | 'locked' | 'archived'
 	
 	// Letter metadata
 	referenceNumber: text("reference_number"),
@@ -24,6 +24,8 @@ export const letter = pgTable("letter", {
 	stampedBy: text("stamped_by").references(() => user.id),
 	stampedAt: timestamp("stamped_at"),
 	lockedAt: timestamp("locked_at"),
+	rejectedBy: text("rejected_by").references(() => user.id),
+	rejectedAt: timestamp("rejected_at"),
 	
 	// Attachments
 	attachments: jsonb("attachments"), // Array of attachment metadata
