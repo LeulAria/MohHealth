@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Suspense } from "react";
 import "../index.css";
 import Providers from "@/components/providers";
 import Header from "@/components/header";
@@ -30,7 +31,9 @@ export default function RootLayout({
 			<body
 				className={`${geistSans.variable} ${geistMono.variable} antialiased`}
 			>
-				<ProgressBar />
+				<Suspense fallback={null}>
+					<ProgressBar />
+				</Suspense>
 				<Providers>
 					{children}
 				</Providers>

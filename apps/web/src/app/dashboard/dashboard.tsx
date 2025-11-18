@@ -1263,19 +1263,34 @@ export default function Dashboard({
 										<>
 											{detailTab === 0 && (
 												<Box sx={{ flex: 1, overflow: "auto" }}>
-													<LetterDisplay letter={selectedLetterData} />
+													<LetterDisplay 
+														letter={{
+															id: selectedLetterData.id,
+															type: selectedLetterData.type as "internal" | "external",
+															referenceNumber: selectedLetterData.referenceNumber,
+															date: selectedLetterData.date,
+															to: selectedLetterData.to,
+															from: selectedLetterData.from,
+															subject: selectedLetterData.subject,
+															content: selectedLetterData.content as any,
+															attachments: selectedLetterData.attachments,
+															status: selectedLetterData.status,
+															stampedBy: selectedLetterData.stampedBy,
+															stampedAt: selectedLetterData.stampedAt,
+														}} 
+													/>
 												</Box>
 											)}
 											{detailTab === 1 && (
 												<LetterDiscussion
 													letterId={selectedLetterData.id}
-													comments={selectedLetterData.comments || []}
+													comments={(selectedLetterData.comments || []) as any}
 													currentUserId={currentUserId}
 												/>
 											)}
 											{detailTab === 2 && (
 												<Box sx={{ flex: 1, overflow: "auto" }}>
-													<LetterAuditTimeline logs={selectedLetterData.auditLogs || []} />
+													<LetterAuditTimeline logs={(selectedLetterData.auditLogs || []) as any} />
 												</Box>
 											)}
 										</>
