@@ -186,9 +186,31 @@ export default function LetterForm({ letterType, onBack }: LetterFormProps) {
 							<MenuItem value="" disabled>
 								(Drop Down)
 							</MenuItem>
-							<MenuItem value="desk_head">ዴስክ ሃላፊ</MenuItem>
-							<MenuItem value="expert">ኤክስፐርት</MenuItem>
-							<MenuItem value="record_room">መዝገብ ክፍል</MenuItem>
+							<MenuItem value="ለ፡ ስራ አመራር ዋና ስራ አስፈፃሚ">ለ፡ ስራ አመራር ዋና ስራ አስፈፃሚ</MenuItem>
+							<MenuItem value="ለ፡ ማህበረሰብ ተሳትፎና የመጀመሪያ ደረጃ ጤና ክብካቤ መሪ ስራ አስፈፃሚ">ለ፡ ማህበረሰብ ተሳትፎና የመጀመሪያ ደረጃ ጤና ክብካቤ መሪ ስራ አስፈፃሚ</MenuItem>
+							<MenuItem value="ለ፡ ፖሊሲና ስትራቴጂ ጥናትና ምርምር መ/ስ አስፈፃሚ">ለ፡ ፖሊሲና ስትራቴጂ ጥናትና ምርምር መ/ስ አስፈፃሚ</MenuItem>
+							<MenuItem value="ለ፡ ተቋማዊ ለዉጥ ስራ አስፈፃሚ">ለ፡ ተቋማዊ ለዉጥ ስራ አስፈፃሚ</MenuItem>
+							<MenuItem value="ለ፡ ሜዲካል አገልግሎት መሪ ስራ አስፈፃሚ">ለ፡ ሜዲካል አገልግሎት መሪ ስራ አስፈፃሚ</MenuItem>
+							<MenuItem value="ለ፡ መድሃኒት፣ የህክምና መሳሪያዎችና/መ መ/ስ/አ">ለ፡ መድሃኒት፣ የህክምና መሳሪያዎችና/መ መ/ስ/አ</MenuItem>
+							<MenuItem value="ለ፡ ዲጂታል ጤና መሪ ስራ አስፈፃሚ">ለ፡ ዲጂታል ጤና መሪ ስራ አስፈፃሚ</MenuItem>
+							<MenuItem value="ለ፡ ጤና መሰረተ ልማት መሪ ስራ አስፈፃሚ">ለ፡ ጤና መሰረተ ልማት መሪ ስራ አስፈፃሚ</MenuItem>
+							<MenuItem value="ለ፡ ብቃትና ሰዉ ሃብት አስተዳደር ስራ አስፈፃሚ">ለ፡ ብቃትና ሰዉ ሃብት አስተዳደር ስራ አስፈፃሚ</MenuItem>
+							<MenuItem value="ለ፡ ጤና ዘርፍ የሰዉ ሃብት ልማትና ማሻሻያ መ/ስ/አ">ለ፡ ጤና ዘርፍ የሰዉ ሃብት ልማትና ማሻሻያ መ/ስ/አ</MenuItem>
+							<MenuItem value="ለ፡ መሰረታዊ አገልግሎት ስራ አስፈፃሚ">ለ፡ መሰረታዊ አገልግሎት ስራ አስፈፃሚ</MenuItem>
+							<MenuItem value="ለ፡ ህዝብ ግንኙነትና ኮሚኒኬሽን ስራ አስፈፃሚ">ለ፡ ህዝብ ግንኙነትና ኮሚኒኬሽን ስራ አስፈፃሚ</MenuItem>
+							<MenuItem value="ለ፡ በሽታ መከላከልና መቆጣጠር መሪ ስራ አስፈፃሚ">ለ፡ በሽታ መከላከልና መቆጣጠር መሪ ስራ አስፈፃሚ</MenuItem>
+							<MenuItem value="ለ፡ እናቶች ፣ህፃናትና አፍላ ወጣቶች ጤና አገልግሎት መሪ ስራ አስፈፃሚ">ለ፡ እናቶች ፣ህፃናትና አፍላ ወጣቶች ጤና አገልግሎት መሪ ስራ አስፈፃሚ</MenuItem>
+							<MenuItem value="ለ፡ ፋይናንስ ስራ አስፈፃሚ">ለ፡ ፋይናንስ ስራ አስፈፃሚ</MenuItem>
+							<MenuItem value="ለ፡ ግዥ ስራ አስፈፃሚ">ለ፡ ግዥ ስራ አስፈፃሚ</MenuItem>
+							<MenuItem value="ለ፡ ኤች.አይ.ቪ ኤድስ መ/መ  መሪ ስራ አስፈፃሚ">ለ፡ ኤች.አይ.ቪ ኤድስ መ/መ  መሪ ስራ አስፈፃሚ</MenuItem>
+							<MenuItem value="ለ፡ ህግ ጉዳዮች ስራ አስፈፃሚ">ለ፡ ህግ ጉዳዮች ስራ አስፈፃሚ</MenuItem>
+							<MenuItem value="ለ፡ ሥነ - ምግባርና ፀረ ሙስና ስራ አስፈፃሚ">ለ፡ ሥነ - ምግባርና ፀረ ሙስና ስራ አስፈፃሚ</MenuItem>
+							<MenuItem value="ለ፡ ዉስጥ ኦዲት ስራ አስፈፃሚ">ለ፡ ዉስጥ ኦዲት ስራ አስፈፃሚ</MenuItem>
+							<MenuItem value="ለ፡ ስትራቴጂክ ጉዳዮች ስራ አስፈፃሚ">ለ፡ ስትራቴጂክ ጉዳዮች ስራ አስፈፃሚ</MenuItem>
+							<MenuItem value="ለ፡ ሴቶችና ማህበራዊ ጉዳዮች አካቶ ትግበራ ስ/አ">ለ፡ ሴቶችና ማህበራዊ ጉዳዮች አካቶ ትግበራ ስ/አ</MenuItem>
+							<MenuItem value="ለ፡ ኢንፎርሜሽንና ኮሚኒኬሽን ቴክኖሎጅ ስ/አስፈፃሚ">ለ፡ ኢንፎርሜሽንና ኮሚኒኬሽን ቴክኖሎጅ ስ/አስፈፃሚ</MenuItem>
+							<MenuItem value="ለ፡ ሥርዓተ ምግብ ማስተባበሪያ መሪ ስራ አስፈፃሚ">ለ፡ ሥርዓተ ምግብ ማስተባበሪያ መሪ ስራ አስፈፃሚ</MenuItem>
+							<MenuItem value="ለ፡ ጤናና ጤና ነክ ተ/ባለሙያዎች ቁጥጥር መ/ስ/አ">ለ፡ ጤናና ጤና ነክ ተ/ባለሙያዎች ቁጥጥር መ/ስ/አ</MenuItem>
 						</Select>
 					</FormControl>
 				</Box>

@@ -11,8 +11,8 @@ import {
 	Container,
 	Typography,
 	Avatar,
-	Card,
-	CardContent,
+	Paper,
+	Link,
 } from "@mui/material";
 
 export default function SignInForm({
@@ -61,10 +61,10 @@ export default function SignInForm({
 					display: "flex",
 					alignItems: "center",
 					justifyContent: "center",
-					bgcolor: "primary.main",
+					bgcolor: "#f5f5f5",
 				}}
 			>
-				<CircularProgress sx={{ color: "white" }} />
+				<CircularProgress />
 			</Box>
 		);
 	}
@@ -73,130 +73,166 @@ export default function SignInForm({
 		<Box
 			sx={{
 				minHeight: "100vh",
-				bgcolor: "primary.main",
+				bgcolor: "#f5f5f5",
 				display: "flex",
 				alignItems: "center",
 				justifyContent: "center",
-				p: 4,
+				p: 2,
 			}}
 		>
-			<Container maxWidth="md">
-				{/* Header with Logo and Title */}
-				<Box sx={{ display: "flex", gap: 3, mb: 6, alignItems: "flex-start" }}>
-					<Avatar
-						src="/MOH White Transparent.png"
-						alt="MOH Logo"
-						sx={{ width: 80, height: 80, bgcolor: "transparent" }}
-						variant="square"
-					/>
-					<Box sx={{ flex: 1, color: "white" }}>
-						<Typography variant="body2" sx={{ mb: 0.5 }}>
-							ጤና ሚኒስቴር - ኢትዮጵያ
-						</Typography>
-						<Typography variant="caption" sx={{ mb: 2, display: "block" }}>
-							MINISTRY OF HEALTH-ETHIOPIA
-						</Typography>
-						<Typography variant="h3" sx={{ mb: 1, fontWeight: "bold" }}>
-							ዲጂታል ደብዳቤ
-						</Typography>
-						<Typography variant="h6">Digital Letter Management System</Typography>
-					</Box>
-				</Box>
-
-				{/* Form Section */}
-				<Card
+			<Container maxWidth="sm">
+				<Paper
+					elevation={0}
 					sx={{
-						maxWidth: 500,
-						mx: "auto",
-						bgcolor: "background.paper",
-						elevation: 8,
-						borderRadius: "10px",
+						p: { xs: 4, sm: 6 },
+						borderRadius: 3,
+						border: "1px solid #e0e0e0",
+						bgcolor: "white",
 					}}
 				>
-					<CardContent sx={{ p: 4 }}>
+					{/* Logo and Title */}
+					<Box sx={{ textAlign: "center", mb: 4 }}>
+						<Avatar
+							src="/MOH BLUE Transparent.png"
+							alt="MOH Logo"
+							sx={{ width: 60, height: 60, mx: "auto", mb: 2, bgcolor: "transparent" }}
+							variant="square"
+						/>
 						<Typography
-							variant="h4"
-							sx={{ mb: 4, textAlign: "center", fontWeight: "bold" }}
-						>
-							ግባ
-						</Typography>
-
-						<form
-							onSubmit={(e) => {
-								e.preventDefault();
-								e.stopPropagation();
-								form.handleSubmit();
+							variant="h5"
+							sx={{
+								fontWeight: 500,
+								color: "#202124",
+								mb: 0.5,
 							}}
 						>
-							<Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
-								<form.Field name="email">
-									{(field) => (
-										<TextField
-											fullWidth
-											type="email"
-											label="ኢሜይል አድራሻ"
-											id={field.name}
-											value={field.state.value}
-											onBlur={field.handleBlur}
-											onChange={(e) => field.handleChange(e.target.value)}
-											error={field.state.meta.errors.length > 0}
-											helperText={
-												field.state.meta.errors[0]?.message || ""
-											}
-										/>
-									)}
-								</form.Field>
+							ዲጂታል ደብዳቤ
+						</Typography>
+						<Typography
+							variant="body2"
+							sx={{
+								color: "#5f6368",
+								fontSize: "0.875rem",
+							}}
+						>
+							ወደ መለያዎ ይግቡ
+						</Typography>
+					</Box>
 
-								<form.Field name="password">
-									{(field) => (
-										<TextField
-											fullWidth
-											type="password"
-											label="የይለፍ ቃል"
-											id={field.name}
-											value={field.state.value}
-											onBlur={field.handleBlur}
-											onChange={(e) => field.handleChange(e.target.value)}
-											error={field.state.meta.errors.length > 0}
-											helperText={
-												field.state.meta.errors[0]?.message || ""
-											}
-										/>
-									)}
-								</form.Field>
+					{/* Form */}
+					<form
+						onSubmit={(e) => {
+							e.preventDefault();
+							e.stopPropagation();
+							form.handleSubmit();
+						}}
+					>
+						<Box sx={{ display: "flex", flexDirection: "column", gap: 2.5 }}>
+							<form.Field name="email">
+								{(field) => (
+									<TextField
+										fullWidth
+										type="email"
+										label="ኢሜይል አድራሻ"
+										id={field.name}
+										value={field.state.value}
+										onBlur={field.handleBlur}
+										onChange={(e) => field.handleChange(e.target.value)}
+										error={field.state.meta.errors.length > 0}
+										helperText={
+											field.state.meta.errors[0]?.message || ""
+										}
+										sx={{
+											"& .MuiOutlinedInput-root": {
+												borderRadius: 2,
+												bgcolor: "white",
+											},
+										}}
+									/>
+								)}
+							</form.Field>
 
-								<Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
-									<form.Subscribe>
-										{(state) => (
-											<Button
-												type="submit"
-												variant="contained"
-												size="large"
-												disabled={!state.canSubmit || state.isSubmitting}
-												sx={{
-													px: 4,
-													py: 1.5,
-												}}
-											>
-												{state.isSubmitting ? "በመግባት ላይ..." : "ግባ"}
-											</Button>
-										)}
-									</form.Subscribe>
-								</Box>
-							</Box>
-						</form>
+							<form.Field name="password">
+								{(field) => (
+									<TextField
+										fullWidth
+										type="password"
+										label="የይለፍ ቃል"
+										id={field.name}
+										value={field.state.value}
+										onBlur={field.handleBlur}
+										onChange={(e) => field.handleChange(e.target.value)}
+										error={field.state.meta.errors.length > 0}
+										helperText={
+											field.state.meta.errors[0]?.message || ""
+										}
+										sx={{
+											"& .MuiOutlinedInput-root": {
+												borderRadius: 2,
+												bgcolor: "white",
+											},
+										}}
+									/>
+								)}
+							</form.Field>
 
-						<Box sx={{ mt: 3, textAlign: "center" }}>
-							<Button
-								onClick={onSwitchToSignUp}
-								variant="text"
-								sx={{ color: "text.secondary" }}
-							>
-								መለያ የለዎትም? ይመዝግቡ
-							</Button>
+							<form.Subscribe>
+								{(state) => (
+									<Button
+										type="submit"
+										variant="contained"
+										size="large"
+										fullWidth
+										disabled={!state.canSubmit || state.isSubmitting}
+										sx={{
+											mt: 1,
+											py: 1.5,
+											borderRadius: 2,
+											textTransform: "none",
+											fontSize: "1rem",
+											fontWeight: 500,
+											boxShadow: "none",
+											"&:hover": {
+												boxShadow: "0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)",
+											},
+										}}
+									>
+										{state.isSubmitting ? "በመግባት ላይ..." : "ግባ"}
+									</Button>
+								)}
+							</form.Subscribe>
 						</Box>
-					</CardContent>
-				</Card>
+					</form>
+
+					{/* Footer */}
+					<Box sx={{ mt: 4, textAlign: "center" }}>
+						<Typography variant="body2" color="text.secondary">
+							መለያ የለዎትም?{" "}
+							<Link
+								component="button"
+								onClick={onSwitchToSignUp}
+								sx={{
+									color: "primary.main",
+									fontWeight: 500,
+									textDecoration: "none",
+									cursor: "pointer",
+									"&:hover": {
+										textDecoration: "underline",
+									},
+								}}
+							>
+								መለያ ይፍጠሩ
+							</Link>
+						</Typography>
+					</Box>
+				</Paper>
+
+				{/* Footer Info */}
+				<Box sx={{ mt: 3, textAlign: "center" }}>
+					<Typography variant="caption" color="text.secondary">
+						ጤና ሚኒስቴር - ኢትዮጵያ
+					</Typography>
+				</Box>
 			</Container>
 		</Box>
 	);
