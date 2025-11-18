@@ -10,9 +10,22 @@ export const auth = betterAuth<BetterAuthOptions>({
 
 		schema: schema,
 	}),
-	trustedOrigins: [process.env.CORS_ORIGIN || ""],
+	trustedOrigins: [
+		process.env.CORS_ORIGIN || "http://localhost:3000",
+		"http://localhost:3000",
+		"http://localhost:3001",
+	],
 	emailAndPassword: {
 		enabled: true,
+		requireEmailVerification: false,
+	},
+	user: {
+		additionalFields: {
+			role: {
+				type: "string",
+				required: false,
+			},
+		},
 	},
   plugins: [nextCookies()]
 });

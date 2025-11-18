@@ -1,20 +1,60 @@
 @import "tailwindcss";
+
+@plugin "tailwind-scrollbar-hide";
 @import "tw-animate-css";
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* Amharic Fonts */
+@font-face {
+  font-family: "Shuromeda Serif";
+  src: url("/Amharic/ሽሮሜዳ Serif-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Shuromeda Serif";
+  src: url("/Amharic/ሽሮሜዳ Serif-SemiBold.ttf") format("truetype");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Shuromeda Serif";
+  src: url("/Amharic/ሽሮሜዳ Serif-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Nokia";
+  src: url("/Amharic/ኖኪያ Light.ttf") format("truetype");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Nokia";
+  src: url("/Amharic/ኖኪያ Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 @theme {
-  --font-sans: "Inter", "Geist", ui-sans-serif, system-ui, sans-serif,
+  --font-sans: "Shuromeda Serif", "Nokia", "Inter", "Geist", ui-sans-serif, system-ui, sans-serif,
     "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
 
 html,
 body {
-  @apply bg-white dark:bg-gray-950;
-
-  @media (prefers-color-scheme: dark) {
-    color-scheme: dark;
-  }
+  @apply bg-white;
+  color-scheme: light;
 }
 
 :root {
@@ -50,6 +90,8 @@ body {
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+  --highlight: oklch(0.852 0.199 91.936);
+  --brand: oklch(0.623 0.214 259.815);
 }
 
 .dark {
@@ -84,6 +126,8 @@ body {
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+  --highlight: oklch(0.852 0.199 91.936);
+  --brand: oklch(0.707 0.165 254.624);
 }
 
 @theme inline {
@@ -122,13 +166,74 @@ body {
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+  --color-highlight: var(--highlight);
+  --color-brand: var(--brand);
 }
 
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
+
+  /* Default: Use Roboto for English text */
   body {
     @apply bg-background text-foreground;
+    font-family: "Roboto", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Arial", sans-serif;
   }
+
+  html {
+    font-family: "Roboto", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Arial", sans-serif;
+  }
+
+  /* Apply Amharic font to elements containing Amharic characters */
+  /* Unicode range for Amharic: U+1200–U+137F */
+  *:lang(am),
+  [lang="am"],
+  *[class*="amharic"],
+  *[class*="ethiopic"] {
+    font-family: "Shuromeda Serif", "Nokia", "Roboto", "Arial", sans-serif !important;
+  }
+
+  /* Use font-family with unicode-range for automatic detection */
+  @font-face {
+    font-family: "Amharic Fallback";
+    src: local("Shuromeda Serif"), local("Nokia");
+    unicode-range: U+1200-137F, U+1380-139F, U+2D80-2DDF, U+AB00-AB2F;
+  }
+
+  /* Apply Amharic font to text nodes containing Amharic characters */
+  /* This is a fallback - we'll use class-based approach in components */
+}
+
+/* Gmail-like clean styling */
+.gmail-style {
+  font-family: "Roboto", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Arial", sans-serif;
+}
+
+.gmail-style * {
+  font-family: inherit;
+}
+
+/* Amharic text styling */
+.amharic-text {
+  font-family: "Shuromeda Serif", "Nokia", "Roboto", "Arial", sans-serif !important;
+}
+
+/* Clean list items like Gmail */
+.clean-list-item {
+  border-radius: 0 24px 24px 0;
+  margin-right: 8px;
+  transition: background-color 0.15s ease-in-out;
+}
+
+.clean-list-item:hover {
+  background-color: rgba(60, 64, 67, 0.08);
+}
+
+.clean-list-item.selected {
+  background-color: rgba(0, 94, 184, 0.12);
+}
+
+.clean-list-item.selected:hover {
+  background-color: rgba(0, 94, 184, 0.16);
 }
