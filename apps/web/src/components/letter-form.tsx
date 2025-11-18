@@ -16,8 +16,7 @@ import {
 	InputAdornment,
 } from "@mui/material";
 import { toast } from "sonner";
-import { Plate, PlateContent } from "platejs/react";
-import { createPlateEditor } from "platejs/react";
+import { Plate, PlateContent, usePlateEditor } from "platejs/react";
 import { EditorKit } from "@/components/editor/editor-kit";
 import { type Value } from "platejs";
 
@@ -28,10 +27,15 @@ interface LetterFormProps {
 
 export default function LetterForm({ letterType, onBack }: LetterFormProps) {
 	const router = useRouter();
-	const editor = useMemo(
-		() => createPlateEditor({ plugins: EditorKit }),
-		[],
-	);
+	const editor = usePlateEditor({
+		plugins: EditorKit,
+		value: [
+			{
+				type: "p",
+				children: [{ text: "" }],
+			},
+		],
+	});
 	const [editorValue, setEditorValue] = useState<Value>([
 		{
 			type: "p",
@@ -230,7 +234,7 @@ export default function LetterForm({ letterType, onBack }: LetterFormProps) {
 						bgcolor: "background.paper",
 					}}
 				>
-					<Plate editor={editor} value={editorValue} onChange={setEditorValue}>
+					<Plate editor={editor}>
 						<PlateContent
 							placeholder="የደብዳቤውን ይዘት ይጻፉ..."
 							style={{

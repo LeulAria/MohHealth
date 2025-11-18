@@ -27,24 +27,58 @@ const apiHandler = new OpenAPIHandler(appRouter, {
 	],
 });
 
-async function handleRequest(req: NextRequest) {
-	const rpcResult = await rpcHandler.handle(req, {
+async function handleRequest(
+	req: NextRequest,
+	context: { params: Promise<Record<string, string | string[]>> }
+) {
+	// Type cast to work around Next.js version mismatch
+	const request = req as any;
+	const rpcResult = await rpcHandler.handle(request, {
 		prefix: "/api/rpc",
-		context: await createContext(req),
+		context: await createContext(request),
 	});
 	if (rpcResult.response) return rpcResult.response;
 
-	const apiResult = await apiHandler.handle(req, {
+	const apiResult = await apiHandler.handle(request, {
 		prefix: "/api/rpc/api-reference",
-		context: await createContext(req),
+		context: await createContext(request),
 	});
 	if (apiResult.response) return apiResult.response;
 
 	return new Response("Not found", { status: 404 });
 }
 
-export const GET = handleRequest;
-export const POST = handleRequest;
-export const PUT = handleRequest;
-export const PATCH = handleRequest;
-export const DELETE = handleRequest;
+export async function GET(
+	req: NextRequest,
+	context: { params: Promise<Record<string, string | string[]>> }
+) {
+	return handleRequest(req, context);
+}
+
+export async function POST(
+	req: NextRequest,
+	context: { params: Promise<Record<string, string | string[]>> }
+) {
+	return handleRequest(req, context);
+}
+
+export async function PUT(
+	req: NextRequest,
+	context: { params: Promise<Record<string, string | string[]>> }
+) {
+	return handleRequest(req, context);
+}
+
+export async function PATCH(
+	req: NextRequest,
+	context: { params: Promise<Record<string, string | string[]>> }
+) {
+	return handleRequest(req, context);
+}
+
+export async function DELETE(
+	req: NextRequest,
+	context: { params: Promise<Record<string, string | string[]>> }
+) {
+	return handleRequest(req, context);
+}

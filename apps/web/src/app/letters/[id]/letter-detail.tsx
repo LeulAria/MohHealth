@@ -45,9 +45,6 @@ import {
 } from "@mui/icons-material";
 import { useRouter } from "next/navigation";
 import { getLetterPermissions } from "@/lib/letter-permissions";
-import { Plate, PlateContent } from "@udecode/plate";
-import { createPlateEditor } from "@udecode/plate";
-import { useMemo } from "react";
 
 interface Letter {
 	id: string;
@@ -171,8 +168,6 @@ export default function LetterDetail({
 	const [comment, setComment] = useState("");
 	const [assignDialogOpen, setAssignDialogOpen] = useState(false);
 	const [selectedUser, setSelectedUser] = useState("");
-
-	const editor = useMemo(() => createPlateEditor(), []);
 
 	const formatDate = (dateString: string) => {
 		const date = new Date(dateString);

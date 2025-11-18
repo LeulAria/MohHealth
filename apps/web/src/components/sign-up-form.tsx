@@ -56,7 +56,7 @@ export default function SignUpForm({
 							try {
 								await authClient.updateUser({
 									role: value.role,
-								});
+								} as any);
 							} catch (error) {
 								console.error("Failed to update user role:", error);
 								// Don't block navigation if role update fails

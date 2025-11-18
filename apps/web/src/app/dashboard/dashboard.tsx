@@ -458,7 +458,7 @@ export default function Dashboard({
 											>
 												<Typography
 													variant="body2"
-													sx={{ fontWeight: 500, truncate: true }}
+													sx={{ fontWeight: 500 }}
 													noWrap
 												>
 													{email.sender}
