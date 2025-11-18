@@ -14,6 +14,7 @@ import {
 	Button,
 	Divider,
 	InputAdornment,
+	Autocomplete,
 } from "@mui/material";
 import { toast } from "sonner";
 import { Plate, PlateContent, usePlateEditor } from "platejs/react";
@@ -107,6 +108,7 @@ export default function LetterForm({ letterType, onBack }: LetterFormProps) {
 			}}
 		>
 			{/* Header */}
+		{isInternal && (
 			<Box sx={{ mb: 3 }}>
 				<Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", mb: 2 }}>
 					<Box>
@@ -124,119 +126,147 @@ export default function LetterForm({ letterType, onBack }: LetterFormProps) {
 						</Typography>
 					</Box>
 					{/* Reference Number and Date - Top Right */}
-					<Box sx={{ display: "flex", flexDirection: "column", gap: 1, alignItems: "flex-end" }}>
-						<Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-							<Typography variant="body2">ቁጥር:-</Typography>
-							<TextField
-								size="small"
-								value={formData.referenceNumber}
-								onChange={(e) =>
-									setFormData({ ...formData, referenceNumber: e.target.value })
-								}
-								sx={{ width: 120 }}
-								placeholder="ጠ/ሥ/ሥ/ጥ/መ/ስ/አ/"
-								variant="standard"
-								InputProps={{ disableUnderline: true }}
-							/>
-							<Typography variant="body2">/2018</Typography>
-						</Box>
-						<Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-							<Typography variant="body2">ቀን:-</Typography>
-							<TextField
-								size="small"
-								type="date"
-								value={formData.date}
-								onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-								sx={{ width: 120 }}
-								InputLabelProps={{ shrink: true }}
-								variant="standard"
-								InputProps={{ disableUnderline: true }}
-							/>
-							<Typography variant="body2">/2018 ዓ.ም.</Typography>
-						</Box>
+				<Box sx={{ display: "flex", flexDirection: "column", gap: 1, alignItems: "flex-end" }}>
+					<Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+						<Typography variant="body2">ቁጥር:-</Typography>
+						<Typography variant="body2">ጤ/ሥ/ኢ/ጥ/መ/ስ/አ.</Typography>
+						<TextField
+							size="small"
+							value={formData.referenceNumber}
+							onChange={(e) =>
+								setFormData({ ...formData, referenceNumber: e.target.value })
+							}
+							sx={{ width: 80 }}
+							placeholder="001"
+							variant="standard"
+							InputProps={{ disableUnderline: true }}
+						/>
+						<Typography variant="body2">2018 ዓ.ም</Typography>
+					</Box>
+					<Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+						<Typography variant="body2">ቀን:-</Typography>
+						<TextField
+							size="small"
+							value={formData.date}
+							onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+							sx={{ width: 150 }}
+							placeholder="ቀን/ወር/ዓመት"
+							variant="standard"
+							InputProps={{ disableUnderline: true }}
+						/>
 					</Box>
 				</Box>
+				</Box>
 				<Divider sx={{ mb: 2 }} />
-				{isInternal && (
-					<Typography variant="h5" sx={{ textAlign: "center", mb: 3, fontWeight: 600 }}>
-						የቢሮ ማስታወሻ
-					</Typography>
-				)}
+			<Typography variant="h5" sx={{ textAlign: "center", mb: 3, fontWeight: 600 }}>
+				የቢሮ ማስታወሻ
+			</Typography>
 			</Box>
+		)}
 
 			{/* Form Fields */}
-			<Box sx={{ display: "flex", flexDirection: "column", gap: 2.5 }}>
+			<Box sx={{ display: "flex", flexDirection: "column", gap: 2.5, pt: isInternal ? 0 : "10%" }}>
 				{/* To Field */}
-				<Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+				<Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mt: isInternal ? 0 : "80px" }}>
 					<Typography variant="body1" sx={{ minWidth: 50, fontWeight: 500 }}>
 						ለ:
 					</Typography>
-					<FormControl fullWidth>
-						<Select
+					{isInternal ? (
+						<Autocomplete
+							fullWidth
+							freeSolo
+							options={[
+								"ለ፡ ስራ አመራር ዋና ስራ አስፈፃሚ",
+								"ለ፡ ማህበረሰብ ተሳትፎና የመጀመሪያ ደረጃ ጤና ክብካቤ መሪ ስራ አስፈፃሚ",
+								"ለ፡ ፖሊሲና ስትራቴጂ ጥናትና ምርምር መ/ስ አስፈፃሚ",
+								"ለ፡ ተቋማዊ ለዉጥ ስራ አስፈፃሚ",
+								"ለ፡ ሜዲካል አገልግሎት መሪ ስራ አስፈፃሚ",
+								"ለ፡ መድሃኒት፣ የህክምና መሳሪያዎችና/መ መ/ስ/አ",
+								"ለ፡ ዲጂታል ጤና መሪ ስራ አስፈፃሚ",
+								"ለ፡ ጤና መሰረተ ልማት መሪ ስራ አስፈፃሚ",
+								"ለ፡ ብቃትና ሰዉ ሃብት አስተዳደር ስራ አስፈፃሚ",
+								"ለ፡ ጤና ዘርፍ የሰዉ ሃብት ልማትና ማሻሻያ መ/ስ/አ",
+								"ለ፡ መሰረታዊ አገልግሎት ስራ አስፈፃሚ",
+								"ለ፡ ህዝብ ግንኙነትና ኮሚኒኬሽን ስራ አስፈፃሚ",
+								"ለ፡ በሽታ መከላከልና መቆጣጠር መሪ ስራ አስፈፃሚ",
+								"ለ፡ እናቶች ፣ህፃናትና አፍላ ወጣቶች ጤና አገልግሎት መሪ ስራ አስፈፃሚ",
+								"ለ፡ ፋይናንስ ስራ አስፈፃሚ",
+								"ለ፡ ግዥ ስራ አስፈፃሚ",
+								"ለ፡ ኤች.አይ.ቪ ኤድስ መ/መ  መሪ ስራ አስፈፃሚ",
+								"ለ፡ ህግ ጉዳዮች ስራ አስፈፃሚ",
+								"ለ፡ ሥነ - ምግባርና ፀረ ሙስና ስራ አስፈፃሚ",
+								"ለ፡ ዉስጥ ኦዲት ስራ አስፈፃሚ",
+								"ለ፡ ስትራቴጂክ ጉዳዮች ስራ አስፈፃሚ",
+								"ለ፡ ሴቶችና ማህበራዊ ጉዳዮች አካቶ ትግበራ ስ/አ",
+								"ለ፡ ኢንፎርሜሽንና ኮሚኒኬሽን ቴክኖሎጅ ስ/አስፈፃሚ",
+								"ለ፡ ሥርዓተ ምግብ ማስተባበሪያ መሪ ስራ አስፈፃሚ",
+								"ለ፡ ጤናና ጤና ነክ ተ/ባለሙያዎች ቁጥጥር መ/ስ/አ",
+							]}
+							value={formData.to}
+							onChange={(event, newValue) => {
+								setFormData({ ...formData, to: newValue || "" });
+							}}
+							onInputChange={(event, newInputValue) => {
+								setFormData({ ...formData, to: newInputValue });
+							}}
+							renderInput={(params) => (
+								<TextField
+									{...params}
+									placeholder="ይምረጡ ወይም ይጻፉ..."
+									sx={{
+										bgcolor: "background.paper",
+										"& .MuiOutlinedInput-root": {
+											"& fieldset": {
+												borderWidth: 1,
+											},
+										},
+									}}
+								/>
+							)}
+						/>
+					) : (
+						<TextField
+							fullWidth
+							multiline
+							rows={3}
 							value={formData.to}
 							onChange={(e) => setFormData({ ...formData, to: e.target.value })}
-							displayEmpty
 							sx={{
 								bgcolor: "background.paper",
-								"& .MuiOutlinedInput-notchedOutline": {
-									borderWidth: 1,
+								"& .MuiOutlinedInput-root": {
+									"& fieldset": {
+										borderWidth: 1,
+									},
 								},
 							}}
-						>
-							<MenuItem value="" disabled>
-								(Drop Down)
-							</MenuItem>
-							<MenuItem value="ለ፡ ስራ አመራር ዋና ስራ አስፈፃሚ">ለ፡ ስራ አመራር ዋና ስራ አስፈፃሚ</MenuItem>
-							<MenuItem value="ለ፡ ማህበረሰብ ተሳትፎና የመጀመሪያ ደረጃ ጤና ክብካቤ መሪ ስራ አስፈፃሚ">ለ፡ ማህበረሰብ ተሳትፎና የመጀመሪያ ደረጃ ጤና ክብካቤ መሪ ስራ አስፈፃሚ</MenuItem>
-							<MenuItem value="ለ፡ ፖሊሲና ስትራቴጂ ጥናትና ምርምር መ/ስ አስፈፃሚ">ለ፡ ፖሊሲና ስትራቴጂ ጥናትና ምርምር መ/ስ አስፈፃሚ</MenuItem>
-							<MenuItem value="ለ፡ ተቋማዊ ለዉጥ ስራ አስፈፃሚ">ለ፡ ተቋማዊ ለዉጥ ስራ አስፈፃሚ</MenuItem>
-							<MenuItem value="ለ፡ ሜዲካል አገልግሎት መሪ ስራ አስፈፃሚ">ለ፡ ሜዲካል አገልግሎት መሪ ስራ አስፈፃሚ</MenuItem>
-							<MenuItem value="ለ፡ መድሃኒት፣ የህክምና መሳሪያዎችና/መ መ/ስ/አ">ለ፡ መድሃኒት፣ የህክምና መሳሪያዎችና/መ መ/ስ/አ</MenuItem>
-							<MenuItem value="ለ፡ ዲጂታል ጤና መሪ ስራ አስፈፃሚ">ለ፡ ዲጂታል ጤና መሪ ስራ አስፈፃሚ</MenuItem>
-							<MenuItem value="ለ፡ ጤና መሰረተ ልማት መሪ ስራ አስፈፃሚ">ለ፡ ጤና መሰረተ ልማት መሪ ስራ አስፈፃሚ</MenuItem>
-							<MenuItem value="ለ፡ ብቃትና ሰዉ ሃብት አስተዳደር ስራ አስፈፃሚ">ለ፡ ብቃትና ሰዉ ሃብት አስተዳደር ስራ አስፈፃሚ</MenuItem>
-							<MenuItem value="ለ፡ ጤና ዘርፍ የሰዉ ሃብት ልማትና ማሻሻያ መ/ስ/አ">ለ፡ ጤና ዘርፍ የሰዉ ሃብት ልማትና ማሻሻያ መ/ስ/አ</MenuItem>
-							<MenuItem value="ለ፡ መሰረታዊ አገልግሎት ስራ አስፈፃሚ">ለ፡ መሰረታዊ አገልግሎት ስራ አስፈፃሚ</MenuItem>
-							<MenuItem value="ለ፡ ህዝብ ግንኙነትና ኮሚኒኬሽን ስራ አስፈፃሚ">ለ፡ ህዝብ ግንኙነትና ኮሚኒኬሽን ስራ አስፈፃሚ</MenuItem>
-							<MenuItem value="ለ፡ በሽታ መከላከልና መቆጣጠር መሪ ስራ አስፈፃሚ">ለ፡ በሽታ መከላከልና መቆጣጠር መሪ ስራ አስፈፃሚ</MenuItem>
-							<MenuItem value="ለ፡ እናቶች ፣ህፃናትና አፍላ ወጣቶች ጤና አገልግሎት መሪ ስራ አስፈፃሚ">ለ፡ እናቶች ፣ህፃናትና አፍላ ወጣቶች ጤና አገልግሎት መሪ ስራ አስፈፃሚ</MenuItem>
-							<MenuItem value="ለ፡ ፋይናንስ ስራ አስፈፃሚ">ለ፡ ፋይናንስ ስራ አስፈፃሚ</MenuItem>
-							<MenuItem value="ለ፡ ግዥ ስራ አስፈፃሚ">ለ፡ ግዥ ስራ አስፈፃሚ</MenuItem>
-							<MenuItem value="ለ፡ ኤች.አይ.ቪ ኤድስ መ/መ  መሪ ስራ አስፈፃሚ">ለ፡ ኤች.አይ.ቪ ኤድስ መ/መ  መሪ ስራ አስፈፃሚ</MenuItem>
-							<MenuItem value="ለ፡ ህግ ጉዳዮች ስራ አስፈፃሚ">ለ፡ ህግ ጉዳዮች ስራ አስፈፃሚ</MenuItem>
-							<MenuItem value="ለ፡ ሥነ - ምግባርና ፀረ ሙስና ስራ አስፈፃሚ">ለ፡ ሥነ - ምግባርና ፀረ ሙስና ስራ አስፈፃሚ</MenuItem>
-							<MenuItem value="ለ፡ ዉስጥ ኦዲት ስራ አስፈፃሚ">ለ፡ ዉስጥ ኦዲት ስራ አስፈፃሚ</MenuItem>
-							<MenuItem value="ለ፡ ስትራቴጂክ ጉዳዮች ስራ አስፈፃሚ">ለ፡ ስትራቴጂክ ጉዳዮች ስራ አስፈፃሚ</MenuItem>
-							<MenuItem value="ለ፡ ሴቶችና ማህበራዊ ጉዳዮች አካቶ ትግበራ ስ/አ">ለ፡ ሴቶችና ማህበራዊ ጉዳዮች አካቶ ትግበራ ስ/አ</MenuItem>
-							<MenuItem value="ለ፡ ኢንፎርሜሽንና ኮሚኒኬሽን ቴክኖሎጅ ስ/አስፈፃሚ">ለ፡ ኢንፎርሜሽንና ኮሚኒኬሽን ቴክኖሎጅ ስ/አስፈፃሚ</MenuItem>
-							<MenuItem value="ለ፡ ሥርዓተ ምግብ ማስተባበሪያ መሪ ስራ አስፈፃሚ">ለ፡ ሥርዓተ ምግብ ማስተባበሪያ መሪ ስራ አስፈፃሚ</MenuItem>
-							<MenuItem value="ለ፡ ጤናና ጤና ነክ ተ/ባለሙያዎች ቁጥጥር መ/ስ/አ">ለ፡ ጤናና ጤና ነክ ተ/ባለሙያዎች ቁጥጥር መ/ስ/አ</MenuItem>
-						</Select>
-					</FormControl>
+						/>
+					)}
 				</Box>
 
-				{/* From Field */}
-				<Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
-					<Typography variant="body1" sx={{ minWidth: 50, fontWeight: 500 }}>
-						ከ:
-					</Typography>
-					<TextField
-						fullWidth
-						value={formData.from}
-						onChange={(e) => setFormData({ ...formData, from: e.target.value })}
-						sx={{
-							bgcolor: "background.paper",
-							"& .MuiOutlinedInput-root": {
-								"& fieldset": {
-									borderWidth: 1,
+				{/* From Field - Only for internal letters */}
+				{isInternal && (
+					<Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+						<Typography variant="body1" sx={{ minWidth: 50, fontWeight: 500 }}>
+							ከ:
+						</Typography>
+						<TextField
+							fullWidth
+							value={formData.from}
+							onChange={(e) => setFormData({ ...formData, from: e.target.value })}
+							sx={{
+								bgcolor: "background.paper",
+								"& .MuiOutlinedInput-root": {
+									"& fieldset": {
+										borderWidth: 1,
+									},
 								},
-							},
-						}}
-					/>
-				</Box>
+							}}
+						/>
+					</Box>
+				)}
 
 				{/* Subject Field */}
-				<Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+				<Box sx={{ display: "flex", alignItems: "center", gap: 1.5, ml: "20px" }}>
 					<Typography variant="body1" sx={{ minWidth: 50, fontWeight: 500 }}>
 						ጉዳዩ:
 					</Typography>
@@ -250,41 +280,17 @@ export default function LetterForm({ letterType, onBack }: LetterFormProps) {
 								"& fieldset": {
 									borderWidth: 1,
 								},
+								"& input": {
+									paddingLeft: "50px",
+								},
 							},
 						}}
 					/>
 				</Box>
 
-				{/* Relevant Body - Only for external */}
-				{!isInternal && (
-					<Box>
-						<Typography variant="body1" sx={{ mb: 1, fontWeight: 500 }}>
-							የሚመለከተው አካል
-						</Typography>
-						<TextField
-							fullWidth
-							multiline
-							rows={3}
-							value={formData.relevantBody}
-							onChange={(e) =>
-								setFormData({ ...formData, relevantBody: e.target.value })
-							}
-							sx={{
-								bgcolor: "background.paper",
-								"& .MuiOutlinedInput-root": {
-									"& fieldset": {
-										borderWidth: 1,
-									},
-								},
-							}}
-						/>
-					</Box>
-				)}
 
-				{/* Content Label */}
-				<Typography variant="body1" sx={{ fontWeight: 600 }}>
-					የደብዳቤው ይዘት
-				</Typography>
+
+
 
 				{/* WYSIWYG Editor */}
 				<Box
@@ -308,27 +314,9 @@ export default function LetterForm({ letterType, onBack }: LetterFormProps) {
 					</Plate>
 				</Box>
 
-				{/* Attachments - Only for external */}
-				{!isInternal && (
-					<Box sx={{ display: "flex", alignItems: "center", gap: 1, mt: 2 }}>
-						<Typography variant="body2">አባሪዎች</Typography>
-						<TextField
-							size="small"
-							type="number"
-							value={formData.attachments}
-							onChange={(e) =>
-								setFormData({ ...formData, attachments: e.target.value })
-							}
-							sx={{ width: 60 }}
-							inputProps={{ min: 0 }}
-						/>
-					</Box>
-				)}
 
-				{/* Closing */}
-				<Box sx={{ display: "flex", justifyContent: "flex-end", mt: 4 }}>
-					<Typography variant="body2">ከሰላምታ ጋር</Typography>
-				</Box>
+
+
 			</Box>
 
 			{/* Action Buttons */}
