@@ -110,7 +110,7 @@ export default function Dashboard({
 	const lettersQueryOptions = useMemo(
 		() =>
 			isDraftView
-				? orpc.letter.getByStatus.queryOptions({ status: "draft" })
+				? orpc.letter.getByStatus.queryOptions({ input: { status: "draft" } })
 				: orpc.letter.getAll.queryOptions(),
 		[isDraftView],
 	);
@@ -244,7 +244,7 @@ export default function Dashboard({
 			// Invalidate all letter queries to refetch
 			queryClient.invalidateQueries({ queryKey: orpc.letter.getAll.queryOptions().queryKey });
 			queryClient.invalidateQueries({
-				queryKey: orpc.letter.getByStatus.queryOptions({ status: "draft" }).queryKey,
+				queryKey: orpc.letter.getByStatus.queryOptions({ input: { status: "draft" } }).queryKey,
 			});
 			if (selectedEmail?.id) {
 				queryClient.invalidateQueries({ queryKey: ["letter", "getById", selectedEmail.id] });
