@@ -75,6 +75,7 @@ interface Email {
 	isNew?: boolean;
 	status?: string;
 	direction?: string;
+	letterType?: string;
 }
 
 type LetterDetail = Awaited<ReturnType<typeof client.letter.getById>>;
@@ -163,6 +164,7 @@ export default function Dashboard({
 				isNew: letter.status === "draft" || letter.status === "pending_approval",
 				status: letter.status,
 				direction: letter.direction,
+				letterType: (letter as any).letterType || "text",
 			};
 		});
 	}, [letters]);
@@ -384,24 +386,40 @@ export default function Dashboard({
 				{/* Navigation */}
 				<Box sx={{ flex: 1, overflow: "auto", p: 1 }}>
 					{/* Create Letter Button */}
-					<Box sx={{ px: sidebarOpen ? 2 : 1, mb: 2 }}>
-						<Button
-							fullWidth={sidebarOpen}
-							variant="contained"
-							startIcon={<AddIcon />}
-							onClick={() => router.push("/create-letter")}
-							sx={{
-								textTransform: "none",
-								borderRadius: 2,
-								py: 1.5,
-								minWidth: sidebarOpen ? "auto" : 48,
-								px: sidebarOpen ? 2 : 1,
-							}}
-							title={sidebarOpen ? undefined : "ደብዳቤ ፍጠር"}
-						>
-							{sidebarOpen && "ደብዳቤ ፍጠር"}
-						</Button>
-					</Box>
+			<Box sx={{ px: sidebarOpen ? 2 : 1, mb: 2, display: "flex", flexDirection: "column", gap: 1 }}>
+				<Button
+					fullWidth={sidebarOpen}
+					variant="contained"
+					startIcon={<AddIcon />}
+					onClick={() => router.push("/create-letter")}
+					sx={{
+						textTransform: "none",
+						borderRadius: 2,
+						py: 1.5,
+						minWidth: sidebarOpen ? "auto" : 48,
+						px: sidebarOpen ? 2 : 1,
+					}}
+					title={sidebarOpen ? undefined : "ደብዳቤ ፍጠር"}
+				>
+					{sidebarOpen && "ደብዳቤ ፍጠር"}
+				</Button>
+				<Button
+					fullWidth={sidebarOpen}
+					variant="outlined"
+					startIcon={<ScanIcon />}
+					onClick={() => router.push("/scan-letter")}
+					sx={{
+						textTransform: "none",
+						borderRadius: 2,
+						py: 1.5,
+						minWidth: sidebarOpen ? "auto" : 48,
+						px: sidebarOpen ? 2 : 1,
+					}}
+					title={sidebarOpen ? undefined : "ደብዳቤ ቃኝ"}
+				>
+					{sidebarOpen && "ደብዳቤ ቃኝ"}
+				</Button>
+			</Box>
 
 					{/* Direction Filters */}
 					{sidebarOpen && (
@@ -990,6 +1008,20 @@ export default function Dashboard({
 													{email.sender}
 												</Typography>
 												<Box sx={{ display: "flex", gap: 0.5, alignItems: "center" }}>
+									{email.letterType === "scanned" && (
+										<Chip
+											icon={<ScanIcon sx={{ fontSize: "0.875rem !important" }} />}
+											label="ስካን"
+											size="small"
+											sx={{
+												bgcolor: "info.main",
+												color: "info.contrastText",
+												fontSize: "0.75rem",
+												height: 20,
+												fontWeight: 500,
+											}}
+										/>
+									)}
 													{email.status === "approved" && (
 														<Chip
 															label="ተጸድቋል"
@@ -1277,6 +1309,8 @@ export default function Dashboard({
 															status: selectedLetterData.status,
 															stampedBy: selectedLetterData.stampedBy,
 															stampedAt: selectedLetterData.stampedAt,
+															letterType: (selectedLetterData as any).letterType,
+															scannedImageUrl: (selectedLetterData as any).scannedImageUrl,
 														}} 
 													/>
 												</Box>

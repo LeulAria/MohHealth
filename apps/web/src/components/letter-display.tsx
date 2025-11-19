@@ -1,15 +1,18 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import {
 	Box,
 	Paper,
 	TextField,
 	Typography,
 	Divider,
+	CircularProgress,
 } from "@mui/material";
 import { Plate, PlateContent, usePlateEditor } from "platejs/react";
 import { ReadOnlyEditorKit } from "@/components/editor/readonly-editor-kit";
 import type { Value } from "platejs";
+import { client } from "@/utils/orpc";
 
 interface LetterDisplayProps {
 	letter: {
@@ -25,6 +28,8 @@ interface LetterDisplayProps {
 		status?: string | null;
 		stampedBy?: string | null;
 		stampedAt?: Date | string | null;
+		letterType?: string | null;
+		scannedImageUrl?: string | null;
 	};
 }
 
@@ -60,6 +65,153 @@ export default function LetterDisplay({ letter }: LetterDisplayProps) {
 
 	const isStamped = letter.status === "stamped" && letter.stampedAt;
 
+	// State for signed URL for scanned images
+	const [signedImageUrl, setSignedImageUrl] = useState<string | null>(null);
+	const [loadingImage, setLoadingImage] = useState(false);
+
+	// Fetch signed URL for scanned images
+	useEffect(() => {
+		if (letter.letterType === "scanned" && letter.scannedImageUrl) {
+			setLoadingImage(true);
+			client.upload.generateViewUrl({ s3Url: letter.scannedImageUrl })
+				.then((result) => {
+					setSignedImageUrl(result.viewUrl);
+					setLoadingImage(false);
+				})
+				.catch((error) => {
+					console.error("Failed to generate view URL:", error);
+					setLoadingImage(false);
+					// Fallback to original URL if signed URL generation fails
+					setSignedImageUrl(letter.scannedImageUrl || null);
+				});
+		}
+	}, [letter.letterType, letter.scannedImageUrl]);
+
+	// For scanned letters, show only the image without header/footer
+	if (letter.letterType === "scanned" && letter.scannedImageUrl) {
+		return (
+			<Box sx={{ p: 3, position: "relative" }}>
+				<Box
+					sx={{
+						display: "flex",
+						justifyContent: "center",
+						alignItems: "center",
+						width: "100%",
+						minHeight: 400,
+					}}
+				>
+					{loadingImage ? (
+						<CircularProgress />
+					) : signedImageUrl ? (
+						<Box
+							component="img"
+							src={signedImageUrl}
+							alt="Scanned letter"
+							sx={{
+								maxWidth: "100%",
+								height: "auto",
+								objectFit: "contain",
+							}}
+						/>
+					) : (
+						<Typography color="error">Failed to load image</Typography>
+					)}
+				</Box>
+				{/* Stamp Image - Absolutely Positioned (only for scanned letters) */}
+				{isStamped && (
+					<Box
+						sx={{
+							position: "absolute",
+							bottom: 80,
+							right: 60,
+							width: 120,
+							height: 120,
+							display: "flex",
+							alignItems: "center",
+							justifyContent: "center",
+							zIndex: 10,
+						}}
+					>
+						<Box
+							sx={{
+								width: "100%",
+								height: "100%",
+								borderRadius: "50%",
+								border: "3px solid #005EB8",
+								display: "flex",
+								alignItems: "center",
+								justifyContent: "center",
+								bgcolor: "rgba(255, 255, 255, 0.95)",
+								boxShadow: "0 2px 8px rgba(0, 0, 0, 0.15)",
+								position: "relative",
+							}}
+						>
+							<Box
+								sx={{
+									width: "90%",
+									height: "90%",
+									borderRadius: "50%",
+									border: "2px solid #005EB8",
+									display: "flex",
+									flexDirection: "column",
+									alignItems: "center",
+									justifyContent: "center",
+									p: 1,
+								}}
+							>
+								<Typography
+									variant="caption"
+									sx={{
+										fontSize: "0.7rem",
+										fontWeight: 700,
+										color: "#005EB8",
+										textAlign: "center",
+										lineHeight: 1.2,
+									}}
+								>
+									ጤና ሚኒስቴር
+								</Typography>
+								<Typography
+									variant="caption"
+									sx={{
+										fontSize: "0.6rem",
+										fontWeight: 600,
+										color: "#005EB8",
+										textAlign: "center",
+										mt: 0.5,
+										lineHeight: 1.2,
+									}}
+								>
+									ተማህቷል
+								</Typography>
+								{letter.stampedAt && (
+									<Typography
+										variant="caption"
+										sx={{
+											fontSize: "0.5rem",
+											fontWeight: 500,
+											color: "#005EB8",
+											textAlign: "center",
+											mt: 0.3,
+											lineHeight: 1.2,
+										}}
+									>
+										{new Date(letter.stampedAt).toLocaleDateString("am-ET", {
+											year: "numeric",
+											month: "2-digit",
+											day: "2-digit",
+										})}
+									</Typography>
+								)}
+							</Box>
+						</Box>
+					</Box>
+				)}
+			</Box>
+		);
+	}
+
+	// For regular (non-scanned) letters, show the full format with header and footer
 	return (
 		<Box sx={{ p: 3, position: "relative" }}>
 			<Paper
@@ -119,7 +271,7 @@ export default function LetterDisplay({ letter }: LetterDisplayProps) {
 				{/* Form Fields */}
 				<Box sx={{ display: "flex", flexDirection: "column", gap: 2.5 }}>
 					{/* To Field */}
-					<Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+					<Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
 						<Typography variant="body1" sx={{ minWidth: 50, fontWeight: 500 }}>
 							ለ:
 						</Typography>
@@ -129,7 +281,7 @@ export default function LetterDisplay({ letter }: LetterDisplayProps) {
 					</Box>
 
 					{/* From Field */}
-					<Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+					<Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
 						<Typography variant="body1" sx={{ minWidth: 50, fontWeight: 500 }}>
 							ከ:
 						</Typography>
@@ -139,7 +291,7 @@ export default function LetterDisplay({ letter }: LetterDisplayProps) {
 					</Box>
 
 					{/* Subject Field */}
-					<Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+					<Box sx={{ display: "flex", alignItems: "center", gap: 0.5, ml: "40px" }}>
 						<Typography variant="body1" sx={{ minWidth: 50, fontWeight: 500 }}>
 							ጉዳዩ:
 						</Typography>
@@ -160,17 +312,13 @@ export default function LetterDisplay({ letter }: LetterDisplayProps) {
 						</Box>
 					)}
 
-					{/* Content Label */}
-					<Typography variant="body1" sx={{ fontWeight: 600, mb: 2 }}>
-						የደብዳቤው ይዘት
-					</Typography>
-
-					{/* WYSIWYG Editor - Read Only */}
+					{/* Content - WYSIWYG Editor */}
 					<Box
 						sx={{
 							minHeight: 400,
 							p: 0,
 							bgcolor: "transparent",
+							mt: 1,
 						}}
 					>
 						<Plate editor={editor}>
@@ -182,11 +330,6 @@ export default function LetterDisplay({ letter }: LetterDisplayProps) {
 								}}
 							/>
 						</Plate>
-					</Box>
-
-					{/* Closing */}
-					<Box sx={{ display: "flex", justifyContent: "flex-end", mt: 4 }}>
-						<Typography variant="body2">ከሰላምታ ጋር</Typography>
 					</Box>
 				</Box>
 

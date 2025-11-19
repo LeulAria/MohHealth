@@ -230,6 +230,8 @@ export const letterRouter = {
 				subject: z.string().optional(),
 				content: z.any().optional(),
 				attachments: z.any().optional(),
+				letterType: z.enum(["text", "scanned"]).optional(),
+				scannedImageUrl: z.string().optional(),
 			}),
 		)
 		.handler(async ({ input, context }) => {
@@ -291,6 +293,12 @@ export const letterRouter = {
 				}
 				if (input.attachments !== undefined) {
 					letterValues.attachments = input.attachments;
+				}
+				if (input.letterType !== undefined) {
+					letterValues.letterType = input.letterType;
+				}
+				if (input.scannedImageUrl !== undefined) {
+					letterValues.scannedImageUrl = input.scannedImageUrl;
 				}
 				
 				const [newLetter] = await db

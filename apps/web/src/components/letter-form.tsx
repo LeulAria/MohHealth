@@ -149,11 +149,12 @@ export default function LetterForm({ letterType, onBack }: LetterFormProps) {
 							size="small"
 							value={formData.date}
 							onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-							sx={{ width: 150 }}
-							placeholder="ቀን/ወር/ዓመት"
+							sx={{ width: 80 }}
+							placeholder="ቀን/ወር"
 							variant="standard"
 							InputProps={{ disableUnderline: true }}
 						/>
+						<Typography variant="body2">2018 ዓ.ም</Typography>
 					</Box>
 				</Box>
 				</Box>
@@ -167,7 +168,7 @@ export default function LetterForm({ letterType, onBack }: LetterFormProps) {
 			{/* Form Fields */}
 			<Box sx={{ display: "flex", flexDirection: "column", gap: 2.5, pt: isInternal ? 0 : "10%" }}>
 				{/* To Field */}
-				<Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mt: isInternal ? 0 : "80px" }}>
+				<Box sx={{ display: "flex", alignItems: "center", gap: 0.5, mt: isInternal ? 0 : "80px" }}>
 					<Typography variant="body1" sx={{ minWidth: 50, fontWeight: 500 }}>
 						ለ:
 					</Typography>
@@ -245,7 +246,7 @@ export default function LetterForm({ letterType, onBack }: LetterFormProps) {
 
 				{/* From Field - Only for internal letters */}
 				{isInternal && (
-					<Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+					<Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
 						<Typography variant="body1" sx={{ minWidth: 50, fontWeight: 500 }}>
 							ከ:
 						</Typography>

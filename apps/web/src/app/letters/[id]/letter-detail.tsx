@@ -477,7 +477,7 @@ export default function LetterDetail({
 				<List>
 					{mockActivities.map((activity) => (
 						<ListItem key={activity.id} alignItems="flex-start" disablePadding>
-							<ListItemAvatar sx={{ minWidth: 40 }}>
+							<ListItemAvatar sx={{ minWidth: 36 }}>
 								<Avatar sx={{ width: 32, height: 32, bgcolor: "primary.main" }}>
 									{activity.userAvatar}
 								</Avatar>
@@ -493,7 +493,7 @@ export default function LetterDetail({
 										{formatDate(activity.createdAt)} - {formatTime(activity.createdAt)}
 									</Typography>
 								}
-								sx={{ mb: 2 }}
+								sx={{ mb: 2, pr: 1 }}
 							/>
 						</ListItem>
 					))}

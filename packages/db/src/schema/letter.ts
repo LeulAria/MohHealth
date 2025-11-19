@@ -17,6 +17,10 @@ export const letter = pgTable("letter", {
 	subject: text("subject"),
 	content: jsonb("content"), // Plate.js editor content
 	
+	// Letter type and scanned image
+	letterType: text("letter_type").notNull().default("text"), // 'text' | 'scanned'
+	scannedImageUrl: text("scanned_image_url"), // URL to scanned image in S3
+	
 	// Workflow
 	assignedTo: text("assigned_to").references(() => user.id),
 	approvedBy: text("approved_by").references(() => user.id),
