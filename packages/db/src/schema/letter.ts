@@ -45,6 +45,7 @@ export const letterComment = pgTable("letter_comment", {
 	letterId: text("letter_id").notNull().references(() => letter.id, { onDelete: "cascade" }),
 	userId: text("user_id").notNull().references(() => user.id),
 	content: text("content").notNull(),
+	mentionedUserIds: jsonb("mentioned_user_ids"), // Array of user IDs
 	createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 

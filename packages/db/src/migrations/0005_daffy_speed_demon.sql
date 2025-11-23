@@ -1,0 +1,1 @@
+ALTER TABLE "letter_comment" ADD COLUMN "mentioned_user_ids" jsonb;

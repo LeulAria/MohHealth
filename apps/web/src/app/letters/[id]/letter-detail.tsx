@@ -252,7 +252,9 @@ export default function LetterDetail({
 					</Box>
 					{/* Action Buttons */}
 					<Box sx={{ display: "flex", gap: 2 }}>
-						{permissions.canApprove && mockLetter.status === "pending_approval" && (
+						{permissions.canApprove && 
+							mockLetter.direction !== "incoming" &&
+							mockLetter.status === "pending_approval" && (
 							<>
 								<Button
 									variant="contained"

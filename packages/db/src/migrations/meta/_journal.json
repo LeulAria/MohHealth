@@ -29,6 +29,20 @@
       "when": 1763544000000,
       "tag": "0003_add_letter_type_and_scanned_image",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1763600000000,
+      "tag": "0004_add_letter_task_tables",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1763888273422,
+      "tag": "0005_daffy_speed_demon",
+      "breakpoints": true
     }
   ]
 }

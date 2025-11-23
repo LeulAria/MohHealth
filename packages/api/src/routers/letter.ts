@@ -80,87 +80,162 @@ function assertAccess(letterData: typeof letter.$inferSelect, session: Session) 
 }
 
 async function fetchLetterDetail(letterId: string, session: Session) {
-	const letterData = await getLetterRow(letterId);
-	assertAccess(letterData, session);
+	try {
+		const letterData = await getLetterRow(letterId);
+		assertAccess(letterData, session);
 
-	const relatedUserIds = [
-		letterData.createdBy,
-		letterData.approvedBy,
-		letterData.rejectedBy,
-		letterData.stampedBy,
-	].filter((id): id is string => !!id);
+		const relatedUserIds = [
+			letterData.createdBy,
+			letterData.approvedBy,
+			letterData.rejectedBy,
+			letterData.stampedBy,
+		].filter((id): id is string => !!id);
 
-	const userMap =
-		relatedUserIds.length > 0
-			? Object.fromEntries(
-					(
-						await db
-							.select({
-								id: user.id,
-								name: user.name,
-								image: user.image,
-								role: user.role,
-							})
-							.from(user)
-							.where(inArray(user.id, relatedUserIds))
-					).map((u) => [u.id, u]),
-			  )
-			: {};
+		const userMap =
+			relatedUserIds.length > 0
+				? Object.fromEntries(
+						(
+							await db
+								.select({
+									id: user.id,
+									name: user.name,
+									image: user.image,
+									role: user.role,
+								})
+								.from(user)
+								.where(inArray(user.id, relatedUserIds))
+						).map((u) => [u.id, u]),
+				  )
+				: {};
 
-	const auditUser = alias(user, "auditUser");
-	const auditLogs = await db
-		.select({
-			id: letterAuditLog.id,
-			action: letterAuditLog.action,
-			details: letterAuditLog.details,
-			createdAt: letterAuditLog.createdAt,
-			user: {
-				id: auditUser.id,
-				name: auditUser.name,
-				role: auditUser.role,
-				image: auditUser.image,
-			},
-		})
-		.from(letterAuditLog)
-		.leftJoin(auditUser, eq(auditUser.id, letterAuditLog.userId))
-		.where(eq(letterAuditLog.letterId, letterId))
-		.orderBy(desc(letterAuditLog.createdAt));
+		const auditUser = alias(user, "auditUser");
+		const auditLogs = await db
+			.select({
+				id: letterAuditLog.id,
+				action: letterAuditLog.action,
+				details: letterAuditLog.details,
+				createdAt: letterAuditLog.createdAt,
+				user: {
+					id: auditUser.id,
+					name: auditUser.name,
+					role: auditUser.role,
+					image: auditUser.image,
+				},
+			})
+			.from(letterAuditLog)
+			.leftJoin(auditUser, eq(auditUser.id, letterAuditLog.userId))
+			.where(eq(letterAuditLog.letterId, letterId))
+			.orderBy(desc(letterAuditLog.createdAt));
 
-	const commentUser = alias(user, "commentUser");
-	const comments = await db
-		.select({
-			id: letterComment.id,
-			content: letterComment.content,
-			createdAt: letterComment.createdAt,
-			user: {
-				id: commentUser.id,
-				name: commentUser.name,
-				role: commentUser.role,
-				image: commentUser.image,
-			},
-		})
-		.from(letterComment)
-		.leftJoin(commentUser, eq(commentUser.id, letterComment.userId))
-		.where(eq(letterComment.letterId, letterId))
-		.orderBy(letterComment.createdAt);
+		const commentUser = alias(user, "commentUser");
+		const commentsData = await db
+			.select({
+				id: letterComment.id,
+				content: letterComment.content,
+				mentionedUserIds: letterComment.mentionedUserIds,
+				createdAt: letterComment.createdAt,
+				user: {
+					id: commentUser.id,
+					name: commentUser.name,
+					role: commentUser.role,
+					image: commentUser.image,
+				},
+			})
+			.from(letterComment)
+			.leftJoin(commentUser, eq(commentUser.id, letterComment.userId))
+			.where(eq(letterComment.letterId, letterId))
+			.orderBy(letterComment.createdAt);
 
-	return {
-		...letterData,
-		createdByUser: letterData.createdBy
-			? userMap[letterData.createdBy] ?? null
-			: null,
-		approvedByUser: letterData.approvedBy
-			? userMap[letterData.approvedBy] ?? null
-			: null,
-		rejectedByUser: letterData.rejectedBy
-			? userMap[letterData.rejectedBy] ?? null
-			: null,
-		stampedByUser: letterData.stampedBy
-			? userMap[letterData.stampedBy] ?? null
-			: null,
-		auditLogs,
-		comments,
-	};
+		// Fetch mentioned users for all comments
+		// Handle null/undefined mentionedUserIds safely
+		const allMentionedUserIds = [
+			...new Set(
+				commentsData
+					.map((c) => {
+						if (!c.mentionedUserIds) return [];
+						// Handle both array and non-array JSONB values
+						if (Array.isArray(c.mentionedUserIds)) {
+							return c.mentionedUserIds;
+						}
+						// If it's a string, try to parse it
+						if (typeof c.mentionedUserIds === 'string') {
+							try {
+								const parsed = JSON.parse(c.mentionedUserIds);
+								return Array.isArray(parsed) ? parsed : [];
+							} catch {
+								return [];
+							}
+						}
+						return [];
+					})
+					.flat()
+			),
+		];
+
+		const mentionedUsersMap =
+			allMentionedUserIds.length > 0
+				? Object.fromEntries(
+						(
+							await db
+								.select({
+									id: user.id,
+									name: user.name,
+									email: user.email,
+									role: user.role,
+									image: user.image,
+								})
+								.from(user)
+								.where(inArray(user.id, allMentionedUserIds))
+						).map((u) => [u.id, u]),
+				  )
+				: {};
+
+		const comments = commentsData.map((comment) => {
+			// Safely extract mentionedUserIds
+			let mentionedIds: string[] = [];
+			if (comment.mentionedUserIds) {
+				if (Array.isArray(comment.mentionedUserIds)) {
+					mentionedIds = comment.mentionedUserIds;
+				} else if (typeof comment.mentionedUserIds === 'string') {
+					try {
+						const parsed = JSON.parse(comment.mentionedUserIds);
+						mentionedIds = Array.isArray(parsed) ? parsed : [];
+					} catch {
+						mentionedIds = [];
+					}
+				}
+			}
+
+			return {
+				...comment,
+				mentionedUsers: mentionedIds.map((id) => mentionedUsersMap[id]).filter(Boolean),
+			};
+		});
+
+		return {
+			...letterData,
+			createdByUser: letterData.createdBy
+				? userMap[letterData.createdBy] ?? null
+				: null,
+			approvedByUser: letterData.approvedBy
+				? userMap[letterData.approvedBy] ?? null
+				: null,
+			rejectedByUser: letterData.rejectedBy
+				? userMap[letterData.rejectedBy] ?? null
+				: null,
+			stampedByUser: letterData.stampedBy
+				? userMap[letterData.stampedBy] ?? null
+				: null,
+			auditLogs,
+			comments,
+		};
+	} catch (error) {
+		console.error("Error in fetchLetterDetail:", error);
+		console.error("Letter ID:", letterId);
+		console.error("Error details:", error instanceof Error ? error.message : String(error));
+		console.error("Error stack:", error instanceof Error ? error.stack : "No stack");
+		throw error;
+	}
 }
 
 export const letterRouter = {
@@ -215,7 +290,15 @@ export const letterRouter = {
 	getById: protectedProcedure
 		.input(z.object({ id: z.string() }))
 		.handler(async ({ input, context }) => {
-			return await fetchLetterDetail(input.id, context.session);
+			try {
+				return await fetchLetterDetail(input.id, context.session);
+			} catch (error) {
+				console.error("Error in getById handler:", error);
+				const errorMessage = error instanceof Error ? error.message : String(error);
+				throw new ORPCError("INTERNAL_SERVER_ERROR", {
+					message: `Failed to fetch letter: ${errorMessage}`,
+				});
+			}
 		}),
 
 	create: protectedProcedure
@@ -369,8 +452,38 @@ export const letterRouter = {
 				.where(eq(letter.id, input.id))
 				.returning();
 
-			return updatedLetter;
-		}),
+		return updatedLetter;
+	}),
+
+	// Get letters where user is mentioned
+	getMentions: protectedProcedure.handler(async ({ context }) => {
+		const userId = context.session.user.id;
+		
+		// Get all comments where user is mentioned
+		const commentsWithMentions = await db
+			.select({
+				letterId: letterComment.letterId,
+			})
+			.from(letterComment)
+			.where(
+				sql`${letterComment.mentionedUserIds}::jsonb @> ${JSON.stringify([userId])}::jsonb`
+			);
+
+		const letterIds = [...new Set(commentsWithMentions.map((c) => c.letterId))];
+
+		if (letterIds.length === 0) {
+			return [];
+		}
+
+		// Get the letters
+		const letters = await db
+			.select()
+			.from(letter)
+			.where(inArray(letter.id, letterIds))
+			.orderBy(desc(letter.createdAt));
+
+		return letters;
+	}),
 
 	review: protectedProcedure
 		.input(
@@ -432,6 +545,7 @@ export const letterRouter = {
 			z.object({
 				letterId: z.string(),
 				content: z.string().min(1),
+				mentionedUserIds: z.array(z.string()).optional(),
 			}),
 		)
 		.handler(async ({ input, context }) => {
@@ -443,6 +557,7 @@ export const letterRouter = {
 				letterId: input.letterId,
 				userId: context.session.user.id,
 				content: input.content,
+				mentionedUserIds: input.mentionedUserIds || [],
 			});
 
 			await insertAuditLog(input.letterId, context.session.user.id, "comment", {

@@ -1,6 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
+
+// Module-level cache for scanned images (persists across component unmounts)
+const imageUrlCache = new Map<string, string>();
 import {
 	Box,
 	Paper,
@@ -65,16 +68,26 @@ export default function LetterDisplay({ letter }: LetterDisplayProps) {
 
 	const isStamped = letter.status === "stamped" && letter.stampedAt;
 
-	// State for signed URL for scanned images
+	// State for signed URL for scanned images - cached to prevent reloading
 	const [signedImageUrl, setSignedImageUrl] = useState<string | null>(null);
 	const [loadingImage, setLoadingImage] = useState(false);
 
-	// Fetch signed URL for scanned images
+	// Fetch signed URL for scanned images - only for incoming scanned letters, with module-level caching
 	useEffect(() => {
 		if (letter.letterType === "scanned" && letter.scannedImageUrl) {
+			// Check module-level cache first
+			const cachedUrl = imageUrlCache.get(letter.scannedImageUrl);
+			if (cachedUrl) {
+				setSignedImageUrl(cachedUrl);
+				setLoadingImage(false);
+				return;
+			}
+
 			setLoadingImage(true);
 			client.upload.generateViewUrl({ s3Url: letter.scannedImageUrl })
 				.then((result) => {
+					// Cache the result in module-level cache
+					imageUrlCache.set(letter.scannedImageUrl!, result.viewUrl);
 					setSignedImageUrl(result.viewUrl);
 					setLoadingImage(false);
 				})
